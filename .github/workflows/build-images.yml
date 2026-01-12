@@ -1,0 +1,77 @@
+name: Build and Push Dev Images
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: docker.io
+
+jobs:
+  build-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Base image (Node + Python only)
+          - repo: dev-base
+            tag: "1"
+          # Go
+          - repo: dev-go
+            tag: "1.23"
+            go: "true"
+            go_version: "1.23.4"
+          # Rust
+          - repo: dev-rust
+            tag: "1.83"
+            rust: "true"
+            rust_version: "1.83.0"
+          # Java
+          - repo: dev-java
+            tag: "21"
+            java: "true"
+            java_version: "21"
+          # .NET
+          - repo: dev-dotnet
+            tag: "8.0"
+            dotnet: "true"
+            dotnet_version: "8.0"
+          # Ruby
+          - repo: dev-ruby
+            tag: "3.3"
+            ruby: "true"
+            ruby_version: "3.3"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: warpdotdev/${{ matrix.repo }}:${{ matrix.tag }}
+          build-args: |
+            INSTALL_RUST=${{ matrix.rust || 'false' }}
+            INSTALL_GO=${{ matrix.go || 'false' }}
+            INSTALL_JAVA=${{ matrix.java || 'false' }}
+            INSTALL_DOTNET=${{ matrix.dotnet || 'false' }}
+            INSTALL_RUBY=${{ matrix.ruby || 'false' }}
+            GO_VERSION=${{ matrix.go_version || '1.23.4' }}
+            RUST_VERSION=${{ matrix.rust_version || '1.83.0' }}
+            JAVA_VERSION=${{ matrix.java_version || '21' }}
+            DOTNET_VERSION=${{ matrix.dotnet_version || '8.0' }}
+            RUBY_VERSION=${{ matrix.ruby_version || '3.3' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
