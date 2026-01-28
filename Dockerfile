@@ -18,6 +18,7 @@ ARG INSTALL_GO=false
 ARG INSTALL_JAVA=false
 ARG INSTALL_DOTNET=false
 ARG INSTALL_RUBY=false
+ARG LANGUAGES=""
 
 # Base dependencies
 RUN apt-get update && apt-get install -y \
@@ -108,3 +109,5 @@ RUN if [ "$INSTALL_RUBY" = "true" ]; then \
       ruby --version && \
       bundler --version ; \
     fi
+
+LABEL languages="${LANGUAGES}"
