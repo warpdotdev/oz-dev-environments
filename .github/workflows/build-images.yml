@@ -16,31 +16,37 @@ jobs:
           # Base image (Node + Python only)
           - repo: dev-base
             tag: "1"
+            languages: ""
           # Go
           - repo: dev-go
             tag: "1.23"
             go: "true"
             go_version: "1.23.4"
+            languages: "go,golang"
           # Rust
           - repo: dev-rust
             tag: "1.83"
             rust: "true"
             rust_version: "1.83.0"
+            languages: "rust"
           # Java
           - repo: dev-java
             tag: "21"
             java: "true"
             java_version: "21"
+            languages: "java"
           # .NET
           - repo: dev-dotnet
             tag: "8.0"
             dotnet: "true"
             dotnet_version: "8.0"
+            languages: "dotnet,csharp,fsharp,visualbasic"
           # Ruby
           - repo: dev-ruby
             tag: "3.3"
             ruby: "true"
             ruby_version: "3.3"
+            languages: "ruby"
 
     steps:
       - uses: actions/checkout@v4
@@ -73,5 +79,6 @@ jobs:
             JAVA_VERSION=${{ matrix.java_version || '21' }}
             DOTNET_VERSION=${{ matrix.dotnet_version || '8.0' }}
             RUBY_VERSION=${{ matrix.ruby_version || '3.3' }}
+            LANGUAGES=${{ matrix.languages || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
