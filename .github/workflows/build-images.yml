@@ -54,6 +54,12 @@ jobs:
             rust: "true"
             rust_version: "1.83.0"
             languages: "rust"
+          - repo: dev-rust
+            key: rust
+            tag: "1.85"
+            rust: "true"
+            rust_version: "1.85.0"
+            languages: "rust"
           # Java
           - repo: dev-java
             key: java
