@@ -2,12 +2,34 @@ name: Build and Push Dev Images
 
 on:
   workflow_dispatch:
+    inputs:
+      image:
+        description: 'Image to build (leave empty for all)'
+        required: false
+        type: choice
+        options:
+          - ''
+          - base
+          - go
+          - rust
+          - java
+          - dotnet
+          - ruby
+      version:
+        description: 'Version override (only used when single image selected)'
+        required: false
+        type: string
+      tag:
+        description: 'Tag override (only used when single image selected)'
+        required: false
+        type: string
 
 env:
   REGISTRY: docker.io
 
 jobs:
   build-matrix:
+    name: ${{ matrix.repo }}:${{ inputs.image == matrix.key && inputs.tag || matrix.tag }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -15,34 +37,46 @@ jobs:
         include:
           # Base image (Node + Python only)
           - repo: dev-base
+            key: base
             tag: "1"
             languages: ""
           # Go
           - repo: dev-go
+            key: go
             tag: "1.23"
             go: "true"
             go_version: "1.23.4"
             languages: "go,golang"
           # Rust
           - repo: dev-rust
+            key: rust
             tag: "1.83"
             rust: "true"
             rust_version: "1.83.0"
             languages: "rust"
+          - repo: dev-rust
+            key: rust
+            tag: "1.85"
+            rust: "true"
+            rust_version: "1.85.0"
+            languages: "rust"
           # Java
           - repo: dev-java
+            key: java
             tag: "21"
             java: "true"
             java_version: "21"
             languages: "java"
           # .NET
           - repo: dev-dotnet
+            key: dotnet
             tag: "8.0"
             dotnet: "true"
             dotnet_version: "8.0"
             languages: "dotnet,csharp,fsharp,visualbasic"
           # Ruby
           - repo: dev-ruby
+            key: ruby
             tag: "3.3"
             ruby: "true"
             ruby_version: "3.3"
@@ -50,35 +84,39 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        if: ${{ inputs.image == '' || inputs.image == matrix.key }}
 
       - name: Set up Docker Buildx
+        if: ${{ inputs.image == '' || inputs.image == matrix.key }}
         uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
+        if: ${{ inputs.image == '' || inputs.image == matrix.key }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push
+        if: ${{ inputs.image == '' || inputs.image == matrix.key }}
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
           platforms: linux/amd64
-          tags: warpdotdev/${{ matrix.repo }}:${{ matrix.tag }}
+          tags: warpdotdev/${{ matrix.repo }}:${{ inputs.tag || matrix.tag }}
           build-args: |
             INSTALL_RUST=${{ matrix.rust || 'false' }}
             INSTALL_GO=${{ matrix.go || 'false' }}
             INSTALL_JAVA=${{ matrix.java || 'false' }}
             INSTALL_DOTNET=${{ matrix.dotnet || 'false' }}
             INSTALL_RUBY=${{ matrix.ruby || 'false' }}
-            GO_VERSION=${{ matrix.go_version || '1.23.4' }}
-            RUST_VERSION=${{ matrix.rust_version || '1.83.0' }}
-            JAVA_VERSION=${{ matrix.java_version || '21' }}
-            DOTNET_VERSION=${{ matrix.dotnet_version || '8.0' }}
-            RUBY_VERSION=${{ matrix.ruby_version || '3.3' }}
+            GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
+            RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}
+            JAVA_VERSION=${{ matrix.key == 'java' && inputs.version || matrix.java_version || '21' }}
+            DOTNET_VERSION=${{ matrix.key == 'dotnet' && inputs.version || matrix.dotnet_version || '8.0' }}
+            RUBY_VERSION=${{ matrix.key == 'ruby' && inputs.version || matrix.ruby_version || '3.3' }}
             LANGUAGES=${{ matrix.languages || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
