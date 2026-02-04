@@ -15,6 +15,7 @@ on:
           - java
           - dotnet
           - ruby
+          - full
       version:
         description: 'Version override (only used when single image selected)'
         required: false
@@ -39,7 +40,7 @@ jobs:
           - repo: dev-base
             key: base
             tag: "1"
-            languages: ""
+            languages: "python,javascript"
           # Go
           - repo: dev-go
             key: go
@@ -81,6 +82,21 @@ jobs:
             ruby: "true"
             ruby_version: "3.3"
             languages: "ruby"
+          # Full image with all languages
+          - repo: dev-full
+            key: full
+            tag: "latest"
+            go: "true"
+            go_version: "1.23.4"
+            rust: "true"
+            rust_version: "1.85.0"
+            java: "true"
+            java_version: "21"
+            dotnet: "true"
+            dotnet_version: "8.0"
+            ruby: "true"
+            ruby_version: "3.3"
+            languages: "go,golang,rust,java,dotnet,csharp,fsharp,visualbasic,ruby,python,javascript"
 
     steps:
       - uses: actions/checkout@v4
