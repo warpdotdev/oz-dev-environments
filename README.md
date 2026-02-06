@@ -44,6 +44,7 @@ runtimes.
 - **warpdotdev/dev-java:21** — Temurin JDK 21, Maven, Gradle + base
 - **warpdotdev/dev-dotnet:8.0** — .NET SDK 8.0 + base
 - **warpdotdev/dev-ruby:3.3** — Ruby 3.3 + Bundler + base
+- **warpdotdev/dev-web:1** — Google Chrome, Firefox + base
 
 ## Helpful Tips
 

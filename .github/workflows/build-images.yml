@@ -15,6 +15,7 @@ on:
           - java
           - dotnet
           - ruby
+          - web
           - full
       version:
         description: 'Version override (only used when single image selected)'
@@ -82,6 +83,12 @@ jobs:
             ruby: "true"
             ruby_version: "3.3"
             languages: "ruby"
+          # Web (browsers + Node + Python)
+          - repo: dev-web
+            key: web
+            tag: "1"
+            browsers: "true"
+            languages: "html,css,javascript"
           # Full image with all languages
           - repo: dev-full
             key: full
@@ -128,6 +135,7 @@ jobs:
             INSTALL_JAVA=${{ matrix.java || 'false' }}
             INSTALL_DOTNET=${{ matrix.dotnet || 'false' }}
             INSTALL_RUBY=${{ matrix.ruby || 'false' }}
+            INSTALL_BROWSERS=${{ matrix.browsers || 'false' }}
             GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
             RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}
             JAVA_VERSION=${{ matrix.key == 'java' && inputs.version || matrix.java_version || '21' }}

@@ -18,6 +18,7 @@ ARG INSTALL_GO=false
 ARG INSTALL_JAVA=false
 ARG INSTALL_DOTNET=false
 ARG INSTALL_RUBY=false
+ARG INSTALL_BROWSERS=false
 ARG LANGUAGES=""
 
 # Base dependencies
@@ -108,6 +109,25 @@ RUN if [ "$INSTALL_RUBY" = "true" ]; then \
       rm -rf /var/lib/apt/lists/* && \
       ruby --version && \
       bundler --version ; \
+    fi
+
+# Browsers (Google Chrome + Firefox)
+RUN if [ "$INSTALL_BROWSERS" = "true" ]; then \
+      apt-get update && apt-get install -y \
+        wget \
+        libdbus-glib-1-2 && \
+      # Install Google Chrome from upstream
+      wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+      apt-get install -y ./google-chrome-stable_current_amd64.deb && \
+      rm google-chrome-stable_current_amd64.deb && \
+      # Install Firefox from Mozilla
+      wget -q -O firefox.tar.xz "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
+      tar -xf firefox.tar.xz -C /opt && \
+      ln -s /opt/firefox/firefox /usr/local/bin/firefox && \
+      rm firefox.tar.xz && \
+      rm -rf /var/lib/apt/lists/* && \
+      echo "Chrome version:" && google-chrome --version && \
+      echo "Firefox version:" && firefox --version ; \
     fi
 
 LABEL languages="${LANGUAGES}"
