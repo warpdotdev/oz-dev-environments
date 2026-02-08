@@ -40,7 +40,7 @@ jobs:
           # Base image (Node + Python only)
           - repo: dev-base
             key: base
-            tag: "1"
+            tag: "latest"
             languages: "python,javascript"
           # Go
           - repo: dev-go
@@ -86,7 +86,7 @@ jobs:
           # Web (browsers + Node + Python)
           - repo: dev-web
             key: web
-            tag: "1"
+            tag: "latest"
             browsers: "true"
             languages: "html,css,javascript"
           # Full image with all languages
