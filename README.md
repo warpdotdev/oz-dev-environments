@@ -38,13 +38,13 @@ warp integration create slack --environment env_abc123
 All images are based on Ubuntu. Language-specific images extend the base image with additional
 runtimes.
 
-- **warpdotdev/dev-base:1** — Node 22 + Python 3
+- **warpdotdev/dev-base:latest** — Node 22 + Python 3
 - **warpdotdev/dev-go:1.23** — Go 1.23.4 + base
 - **warpdotdev/dev-rust:1.83** — Rust 1.83.0 + base
 - **warpdotdev/dev-java:21** — Temurin JDK 21, Maven, Gradle + base
 - **warpdotdev/dev-dotnet:8.0** — .NET SDK 8.0 + base
 - **warpdotdev/dev-ruby:3.3** — Ruby 3.3 + Bundler + base
-- **warpdotdev/dev-web:1** — Google Chrome, Firefox + base
+- **warpdotdev/dev-web:latest** — Google Chrome, Firefox + base
 
 ## Helpful Tips
 
