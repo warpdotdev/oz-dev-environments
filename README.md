@@ -76,16 +76,29 @@ All images are based on Ubuntu. Language-specific images extend the base image w
 runtimes.
 
 | Image | Contents |
-|-------|----------|
-| **warpdotdev/dev-base:latest** | Node 22 + Python 3 |
-| **warpdotdev/dev-go:1.23** | Go 1.23.4 + base |
-| **warpdotdev/dev-rust:1.83** | Rust 1.83.0 + base |
-| **warpdotdev/dev-java:21** | Temurin JDK 21, Maven, Gradle + base |
-| **warpdotdev/dev-dotnet:8.0** | .NET SDK 8.0 + base |
-| **warpdotdev/dev-ruby:3.3** | Ruby 3.3 + Bundler + base |
-| **warpdotdev/dev-web:latest** | Google Chrome, Firefox + base |
+||-------|----------|
+|| **warpdotdev/dev-base:latest** | Node 22 + Python 3 + coding agents |
+|| **warpdotdev/dev-coding-agents:latest** | Coding agent CLIs + base (no extra languages) |
+|| **warpdotdev/dev-go:1.23** | Go 1.23.4 + base + coding agents |
+|| **warpdotdev/dev-rust:1.83** | Rust 1.83.0 + base + coding agents |
+|| **warpdotdev/dev-java:21** | Temurin JDK 21, Maven, Gradle + base + coding agents |
+|| **warpdotdev/dev-dotnet:8.0** | .NET SDK 8.0 + base + coding agents |
+|| **warpdotdev/dev-ruby:3.3** | Ruby 3.3 + Bundler + base + coding agents |
+|| **warpdotdev/dev-web:latest** | Google Chrome, Firefox + base + coding agents |
 
-All images include `git`, `curl`, `build-essential`, and `ca-certificates`.
+All images include `git`, `curl`, `build-essential`, `ca-certificates`, and the following
+coding agent CLIs:
+
+- [Claude Code](https://github.com/anthropics/claude-code) (`claude`)
+- [Codex CLI](https://github.com/openai/codex) (`codex`)
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli) (`gemini`)
+- [Amp](https://ampcode.com) (`amp`)
+- [GitHub CLI](https://cli.github.com) (`gh`) — useful for Copilot CLI and git workflows
+
+Each CLI authenticates via environment variables (e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
+`GEMINI_API_KEY`, `AMP_API_KEY`). Store these as
+[Oz secrets](https://docs.warp.dev/agent-platform/cloud-agents/cloud-agent-secrets) so they are
+available at runtime.
 
 ## Using a custom image
 

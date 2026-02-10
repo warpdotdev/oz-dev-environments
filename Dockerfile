@@ -19,6 +19,7 @@ ARG INSTALL_JAVA=false
 ARG INSTALL_DOTNET=false
 ARG INSTALL_RUBY=false
 ARG INSTALL_BROWSERS=false
+ARG INSTALL_CODING_AGENTS=false
 ARG LANGUAGES=""
 
 # Base dependencies
@@ -128,6 +129,28 @@ RUN if [ "$INSTALL_BROWSERS" = "true" ]; then \
       rm -rf /var/lib/apt/lists/* && \
       echo "Chrome version:" && google-chrome --version && \
       echo "Firefox version:" && firefox --version ; \
+    fi
+
+# Coding Agent CLIs
+RUN if [ "$INSTALL_CODING_AGENTS" = "true" ]; then \
+      npm install -g \
+        @anthropic-ai/claude-code \
+        @openai/codex \
+        @google/gemini-cli \
+        @sourcegraph/amp && \
+      curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null && \
+      chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+        > /etc/apt/sources.list.d/github-cli.list && \
+      apt-get update && apt-get install -y --no-install-recommends gh && \
+      rm -rf /var/lib/apt/lists/* && \
+      echo "Installed coding agent CLIs:" && \
+      claude --version && \
+      codex --version && \
+      gemini --version && \
+      amp --version && \
+      gh --version ; \
     fi
 
 LABEL languages="${LANGUAGES}"
