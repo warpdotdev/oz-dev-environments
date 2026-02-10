@@ -95,6 +95,10 @@ All images include `git`, `curl`, `build-essential`, and `ca-certificates`.
 
 ## Coding agent CLIs (`-agents` variants)
 
+If you want to use a different harness from Oz's main agent, you can use Oz to
+orchestrate other coding agents. We have prebuilt Docker images for popular agents
+like Claude Code, Codex, Gemini and Copilot.
+
 The `-agents` tagged images include the following preinstalled coding agent CLIs:
 
 - [Claude Code](https://github.com/anthropics/claude-code) (`claude`)
