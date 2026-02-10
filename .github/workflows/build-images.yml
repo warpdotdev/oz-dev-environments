@@ -18,7 +18,6 @@ on:
           - ruby
           - web
           - full
-          - coding-agents
       version:
         description: 'Version override (only used when single image selected)'
         required: false
@@ -39,24 +38,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Coding Agents (base image + all supported coding agent CLIs)
-          - repo: dev-coding-agents
-            key: coding-agents
-            tag: "latest"
-            coding_agents: "true"
-            languages: "python,javascript"
           # Base image (Node + Python only)
           - repo: dev-base
             key: base
             tag: "latest"
-            coding_agents: "true"
             languages: "python,javascript"
           # Node (Node + Python)
           - repo: dev-node
             key: node
             tag: "22"
             node_version: "22.0.0"
-            coding_agents: "true"
             languages: "javascript,python"
           # Go
           - repo: dev-go
@@ -64,7 +55,6 @@ jobs:
             tag: "1.23"
             go: "true"
             go_version: "1.23.4"
-            coding_agents: "true"
             languages: "go,golang"
           # Rust
           - repo: dev-rust
@@ -72,14 +62,12 @@ jobs:
             tag: "1.83"
             rust: "true"
             rust_version: "1.83.0"
-            coding_agents: "true"
             languages: "rust"
           - repo: dev-rust
             key: rust
             tag: "1.85"
             rust: "true"
             rust_version: "1.85.0"
-            coding_agents: "true"
             languages: "rust"
           # Java
           - repo: dev-java
@@ -87,7 +75,6 @@ jobs:
             tag: "21"
             java: "true"
             java_version: "21"
-            coding_agents: "true"
             languages: "java"
           # .NET
           - repo: dev-dotnet
@@ -95,7 +82,6 @@ jobs:
             tag: "8.0"
             dotnet: "true"
             dotnet_version: "8.0"
-            coding_agents: "true"
             languages: "dotnet,csharp,fsharp,visualbasic"
           # Ruby
           - repo: dev-ruby
@@ -103,14 +89,12 @@ jobs:
             tag: "3.3"
             ruby: "true"
             ruby_version: "3.3"
-            coding_agents: "true"
             languages: "ruby"
           # Web (browsers + Node + Python)
           - repo: dev-web
             key: web
             tag: "latest"
             browsers: "true"
-            coding_agents: "true"
             languages: "html,css,javascript"
           # Full image with all languages
           - repo: dev-full
@@ -126,7 +110,6 @@ jobs:
             dotnet_version: "8.0"
             ruby: "true"
             ruby_version: "3.3"
-            coding_agents: "true"
             languages: "go,golang,rust,java,dotnet,csharp,fsharp,visualbasic,ruby,python,javascript"
 
     steps:
@@ -160,7 +143,34 @@ jobs:
             INSTALL_DOTNET=${{ matrix.dotnet || 'false' }}
             INSTALL_RUBY=${{ matrix.ruby || 'false' }}
             INSTALL_BROWSERS=${{ matrix.browsers || 'false' }}
-            INSTALL_CODING_AGENTS=${{ matrix.coding_agents || 'false' }}
+            INSTALL_CODING_AGENTS=false
+            NODE_VERSION=${{ matrix.key == 'node' && inputs.version || matrix.node_version || '24.0.0' }}
+            GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
+            RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}
+            JAVA_VERSION=${{ matrix.key == 'java' && inputs.version || matrix.java_version || '21' }}
+            DOTNET_VERSION=${{ matrix.key == 'dotnet' && inputs.version || matrix.dotnet_version || '8.0' }}
+            RUBY_VERSION=${{ matrix.key == 'ruby' && inputs.version || matrix.ruby_version || '3.3' }}
+            LANGUAGES=${{ matrix.languages || '' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push (agents variant)
+        if: ${{ inputs.image == '' || inputs.image == matrix.key }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: warpdotdev/${{ matrix.repo }}:${{ inputs.tag || matrix.tag }}-agents
+          build-args: |
+            INSTALL_RUST=${{ matrix.rust || 'false' }}
+            INSTALL_GO=${{ matrix.go || 'false' }}
+            INSTALL_JAVA=${{ matrix.java || 'false' }}
+            INSTALL_DOTNET=${{ matrix.dotnet || 'false' }}
+            INSTALL_RUBY=${{ matrix.ruby || 'false' }}
+            INSTALL_BROWSERS=${{ matrix.browsers || 'false' }}
+            INSTALL_CODING_AGENTS=true
             NODE_VERSION=${{ matrix.key == 'node' && inputs.version || matrix.node_version || '24.0.0' }}
             GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
             RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}

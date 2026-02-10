@@ -136,8 +136,7 @@ RUN if [ "$INSTALL_CODING_AGENTS" = "true" ]; then \
       npm install -g \
         @anthropic-ai/claude-code \
         @openai/codex \
-        @google/gemini-cli \
-        @sourcegraph/amp && \
+        @google/gemini-cli && \
       curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
         | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null && \
       chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
@@ -149,7 +148,6 @@ RUN if [ "$INSTALL_CODING_AGENTS" = "true" ]; then \
       claude --version && \
       codex --version && \
       gemini --version && \
-      amp --version && \
       gh --version ; \
     fi
 
