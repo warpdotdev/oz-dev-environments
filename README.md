@@ -73,19 +73,42 @@ oz agent run-cloud \
 ## Available images
 
 All images are based on Ubuntu. Language-specific images extend the base image with additional
-runtimes.
+runtimes. Each image is published in two variants:
 
-| Image | Contents |
-|-------|----------|
-| **warpdotdev/dev-base:latest** | Node 22 + Python 3 |
-| **warpdotdev/dev-go:1.23** | Go 1.23.4 + base |
-| **warpdotdev/dev-rust:1.83** | Rust 1.83.0 + base |
-| **warpdotdev/dev-java:21** | Temurin JDK 21, Maven, Gradle + base |
-| **warpdotdev/dev-dotnet:8.0** | .NET SDK 8.0 + base |
-| **warpdotdev/dev-ruby:3.3** | Ruby 3.3 + Bundler + base |
-| **warpdotdev/dev-web:latest** | Google Chrome, Firefox + base |
+- **Base** (e.g. `warpdotdev/dev-rust:1.85`) — language runtimes and core tools only
+- **Agents** (e.g. `warpdotdev/dev-rust:1.85-agents`) — same as base, plus preinstalled coding
+  agent CLIs
+
+| Image | Tag | Contents |
+|-------|-----|----------|
+| **warpdotdev/dev-base** | `latest` / `latest-agents` | Node 22 + Python 3 |
+| **warpdotdev/dev-go** | `1.23` / `1.23-agents` | Go 1.23.4 + base |
+| **warpdotdev/dev-rust** | `1.83` / `1.83-agents` | Rust 1.83.0 + base |
+| **warpdotdev/dev-rust** | `1.85` / `1.85-agents` | Rust 1.85.0 + base |
+| **warpdotdev/dev-java** | `21` / `21-agents` | Temurin JDK 21, Maven, Gradle + base |
+| **warpdotdev/dev-dotnet** | `8.0` / `8.0-agents` | .NET SDK 8.0 + base |
+| **warpdotdev/dev-ruby** | `3.3` / `3.3-agents` | Ruby 3.3 + Bundler + base |
+| **warpdotdev/dev-web** | `latest` / `latest-agents` | Google Chrome, Firefox + base |
+| **warpdotdev/dev-full** | `latest` / `latest-agents` | All languages + base |
 
 All images include `git`, `curl`, `build-essential`, and `ca-certificates`.
+
+## Coding agent CLIs (`-agents` variants)
+
+The `-agents` tagged images include the following preinstalled coding agent CLIs:
+
+- [Claude Code](https://github.com/anthropics/claude-code) (`claude`)
+- [Codex CLI](https://github.com/openai/codex) (`codex`)
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli) (`gemini`)
+- [GitHub CLI](https://cli.github.com) (`gh`) — useful for Copilot CLI and git workflows
+
+Each CLI authenticates via environment variables (e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
+`GEMINI_API_KEY`). Store these as
+[Oz secrets](https://docs.warp.dev/agent-platform/cloud-agents/cloud-agent-secrets) so they are
+available at runtime.
+
+If you don't need third-party coding agent CLIs, use the base tags (without `-agents`) for
+smaller image sizes.
 
 ## Using a custom image
 
