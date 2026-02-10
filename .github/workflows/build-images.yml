@@ -10,6 +10,7 @@ on:
         options:
           - ''
           - base
+          - node
           - go
           - rust
           - java
@@ -42,6 +43,12 @@ jobs:
             key: base
             tag: "latest"
             languages: "python,javascript"
+          # Node (Node + Python)
+          - repo: dev-node
+            key: node
+            tag: "22"
+            node_version: "22.0.0"
+            languages: "javascript,python"
           # Go
           - repo: dev-go
             key: go
@@ -136,6 +143,7 @@ jobs:
             INSTALL_DOTNET=${{ matrix.dotnet || 'false' }}
             INSTALL_RUBY=${{ matrix.ruby || 'false' }}
             INSTALL_BROWSERS=${{ matrix.browsers || 'false' }}
+            NODE_VERSION=${{ matrix.key == 'node' && inputs.version || matrix.node_version || '24.0.0' }}
             GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
             RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}
             JAVA_VERSION=${{ matrix.key == 'java' && inputs.version || matrix.java_version || '21' }}

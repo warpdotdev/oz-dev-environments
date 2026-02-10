@@ -3,7 +3,7 @@ FROM ubuntu:latest
 # =============================================================================
 # VERSION CONFIGURATION
 # =============================================================================
-ARG NODE_VERSION=22.0.0
+ARG NODE_VERSION=24.0.0
 ARG GO_VERSION=1.23.4
 ARG RUST_VERSION=1.83.0
 ARG JAVA_VERSION=21
