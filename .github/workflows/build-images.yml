@@ -42,12 +42,14 @@ jobs:
           - repo: dev-base
             key: base
             tag: "latest"
+            platforms: "linux/amd64,linux/arm64"
             languages: "python,javascript"
           # Node (Node + Python)
           - repo: dev-node
             key: node
             tag: "22"
             node_version: "22.0.0"
+            platforms: "linux/amd64,linux/arm64"
             languages: "javascript,python"
           # Go
           - repo: dev-go
@@ -55,6 +57,7 @@ jobs:
             tag: "1.23"
             go: "true"
             go_version: "1.23.4"
+            platforms: "linux/amd64,linux/arm64"
             languages: "go,golang"
           # Rust
           - repo: dev-rust
@@ -62,12 +65,14 @@ jobs:
             tag: "1.83"
             rust: "true"
             rust_version: "1.83.0"
+            platforms: "linux/amd64,linux/arm64"
             languages: "rust"
           - repo: dev-rust
             key: rust
             tag: "1.85"
             rust: "true"
             rust_version: "1.85.0"
+            platforms: "linux/amd64,linux/arm64"
             languages: "rust"
           # Java
           - repo: dev-java
@@ -75,6 +80,7 @@ jobs:
             tag: "21"
             java: "true"
             java_version: "21"
+            platforms: "linux/amd64,linux/arm64"
             languages: "java"
           # .NET
           - repo: dev-dotnet
@@ -82,6 +88,7 @@ jobs:
             tag: "8.0"
             dotnet: "true"
             dotnet_version: "8.0"
+            platforms: "linux/amd64,linux/arm64"
             languages: "dotnet,csharp,fsharp,visualbasic"
           # Ruby
           - repo: dev-ruby
@@ -89,12 +96,14 @@ jobs:
             tag: "3.3"
             ruby: "true"
             ruby_version: "3.3"
+            platforms: "linux/amd64,linux/arm64"
             languages: "ruby"
-          # Web (browsers + Node + Python)
+          # Web (browsers - amd64 only, Chrome/Firefox packages are x86_64)
           - repo: dev-web
             key: web
             tag: "latest"
             browsers: "true"
+            platforms: "linux/amd64"
             languages: "html,css,javascript"
           # Full image with all languages
           - repo: dev-full
@@ -110,11 +119,16 @@ jobs:
             dotnet_version: "8.0"
             ruby: "true"
             ruby_version: "3.3"
+            platforms: "linux/amd64,linux/arm64"
             languages: "go,golang,rust,java,dotnet,csharp,fsharp,visualbasic,ruby,python,javascript"
 
     steps:
       - uses: actions/checkout@v4
         if: ${{ inputs.image == '' || inputs.image == matrix.key }}
+
+      - name: Set up QEMU
+        if: ${{ inputs.image == '' || inputs.image == matrix.key }}
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         if: ${{ inputs.image == '' || inputs.image == matrix.key }}
@@ -134,7 +148,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          platforms: linux/amd64
+          platforms: ${{ matrix.platforms }}
           tags: warpdotdev/${{ matrix.repo }}:${{ inputs.tag || matrix.tag }}
           build-args: |
             INSTALL_RUST=${{ matrix.rust || 'false' }}
@@ -161,7 +175,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          platforms: linux/amd64
+          platforms: ${{ matrix.platforms }}
           tags: warpdotdev/${{ matrix.repo }}:${{ inputs.tag || matrix.tag }}-agents
           build-args: |
             INSTALL_RUST=${{ matrix.rust || 'false' }}
