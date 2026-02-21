@@ -4,6 +4,7 @@ FROM ubuntu:latest
 # VERSION CONFIGURATION
 # =============================================================================
 ARG NODE_VERSION=24.0.0
+ARG BUN_VERSION=1.3.9
 ARG GO_VERSION=1.23.4
 ARG RUST_VERSION=1.83.0
 ARG JAVA_VERSION=21
@@ -13,6 +14,7 @@ ARG RUBY_VERSION=3.3
 # =============================================================================
 # INSTALL FLAGS
 # =============================================================================
+ARG INSTALL_BUN=false
 ARG INSTALL_RUST=false
 ARG INSTALL_GO=false
 ARG INSTALL_JAVA=false
@@ -49,6 +51,23 @@ RUN apt-get update && apt-get install -y \
     ln -sf /usr/bin/python3 /usr/bin/python && \
     rm -rf /var/lib/apt/lists/* && \
     python --version
+
+# Bun
+RUN if [ "$INSTALL_BUN" = "true" ]; then \
+      apt-get update && apt-get install -y unzip && \
+      rm -rf /var/lib/apt/lists/* && \
+      dpkgArch="$(dpkg --print-architecture)"; \
+      case "${dpkgArch##*-}" in \
+        amd64) ARCH='x64';; \
+        arm64) ARCH='aarch64';; \
+      esac; \
+      curl --proto '=https' --tlsv1.2 -fsSLO "https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-$ARCH.zip" && \
+      unzip bun-linux-$ARCH.zip -d /tmp/bun && \
+      mv /tmp/bun/bun-linux-$ARCH/bun /usr/local/bin/bun && \
+      chmod +x /usr/local/bin/bun && \
+      rm -rf bun-linux-$ARCH.zip /tmp/bun && \
+      bun --version ; \
+    fi
 
 # Rust
 RUN if [ "$INSTALL_RUST" = "true" ]; then \
