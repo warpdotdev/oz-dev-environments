@@ -10,6 +10,7 @@ on:
         options:
           - ''
           - base
+          - bun
           - node
           - go
           - rust
@@ -43,6 +44,13 @@ jobs:
             key: base
             tag: "latest"
             languages: "python,javascript"
+          # Bun
+          - repo: dev-bun
+            key: bun
+            tag: "1.3"
+            bun: "true"
+            bun_version: "1.3.9"
+            languages: ""
           # Node (Node + Python)
           - repo: dev-node
             key: node
@@ -100,6 +108,8 @@ jobs:
           - repo: dev-full
             key: full
             tag: "latest"
+            bun: "true"
+            bun_version: "1.3.9"
             go: "true"
             go_version: "1.23.4"
             rust: "true"
@@ -137,6 +147,7 @@ jobs:
           platforms: linux/amd64
           tags: warpdotdev/${{ matrix.repo }}:${{ inputs.tag || matrix.tag }}
           build-args: |
+            INSTALL_BUN=${{ matrix.bun || 'false' }}
             INSTALL_RUST=${{ matrix.rust || 'false' }}
             INSTALL_GO=${{ matrix.go || 'false' }}
             INSTALL_JAVA=${{ matrix.java || 'false' }}
@@ -144,6 +155,7 @@ jobs:
             INSTALL_RUBY=${{ matrix.ruby || 'false' }}
             INSTALL_BROWSERS=${{ matrix.browsers || 'false' }}
             INSTALL_CODING_AGENTS=false
+            BUN_VERSION=${{ matrix.key == 'bun' && inputs.version || matrix.bun_version || '1.3.9' }}
             NODE_VERSION=${{ matrix.key == 'node' && inputs.version || matrix.node_version || '24.0.0' }}
             GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
             RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}
@@ -164,6 +176,7 @@ jobs:
           platforms: linux/amd64
           tags: warpdotdev/${{ matrix.repo }}:${{ inputs.tag || matrix.tag }}-agents
           build-args: |
+            INSTALL_BUN=${{ matrix.bun || 'false' }}
             INSTALL_RUST=${{ matrix.rust || 'false' }}
             INSTALL_GO=${{ matrix.go || 'false' }}
             INSTALL_JAVA=${{ matrix.java || 'false' }}
@@ -171,6 +184,7 @@ jobs:
             INSTALL_RUBY=${{ matrix.ruby || 'false' }}
             INSTALL_BROWSERS=${{ matrix.browsers || 'false' }}
             INSTALL_CODING_AGENTS=true
+            BUN_VERSION=${{ matrix.key == 'bun' && inputs.version || matrix.bun_version || '1.3.9' }}
             NODE_VERSION=${{ matrix.key == 'node' && inputs.version || matrix.node_version || '24.0.0' }}
             GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
             RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}
