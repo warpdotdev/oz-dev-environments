@@ -82,6 +82,7 @@ runtimes. Each image is published in two variants:
 | Image | Tag | Contents |
 |-------|-----|----------|
 | **warpdotdev/dev-base** | `latest` / `latest-agents` | Node 22 + Python 3 |
+| **warpdotdev/dev-bun** | `1.3` / `1.3-agents` | Bun 1.3.9 + base |
 | **warpdotdev/dev-go** | `1.23` / `1.23-agents` | Go 1.23.4 + base |
 | **warpdotdev/dev-rust** | `1.83` / `1.83-agents` | Rust 1.83.0 + base |
 | **warpdotdev/dev-rust** | `1.85` / `1.85-agents` | Rust 1.85.0 + base |
