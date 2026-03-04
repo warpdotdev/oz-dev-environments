@@ -1,6 +1,9 @@
 name: Build and Push Dev Images
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       image:
