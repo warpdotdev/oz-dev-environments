@@ -52,6 +52,10 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/* && \
     python --version
 
+# uv + uvx (Python package/project manager)
+RUN curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=/usr/local/bin sh && \
+    uv --version
+
 # Bun
 RUN if [ "$INSTALL_BUN" = "true" ]; then \
       apt-get update && apt-get install -y unzip && \
