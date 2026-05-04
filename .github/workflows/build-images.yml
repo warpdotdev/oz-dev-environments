@@ -109,12 +109,12 @@ jobs:
             ruby_version: "3.3"
             platforms: "linux/amd64,linux/arm64"
             languages: "ruby"
-          # Web (browsers - amd64 only, Chrome/Firefox packages are x86_64)
+          # Web (browsers)
           - repo: dev-web
             key: web
             tag: "latest"
             browsers: "true"
-            platforms: "linux/amd64"
+            platforms: "linux/amd64,linux/arm64"
             languages: "html,css,javascript"
           # Full image with all languages
           - repo: dev-full

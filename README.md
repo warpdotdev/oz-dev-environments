@@ -72,7 +72,7 @@ oz agent run-cloud \
 
 ## Available images
 
-All images are based on Ubuntu. Language-specific images extend the base image with additional
+All images are based on Debian. Language-specific images extend the base image with additional
 runtimes. Each image is published in two variants:
 
 - **Base** (e.g. `warpdotdev/dev-rust:1.85`) — language runtimes and core tools only
