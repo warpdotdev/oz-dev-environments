@@ -131,22 +131,37 @@ RUN if [ "$INSTALL_RUBY" = "true" ]; then \
       bundler --version ; \
     fi
 
-# Browsers (Google Chrome + Firefox)
+# Browsers (Chrome/Chromium + Firefox)
 RUN if [ "$INSTALL_BROWSERS" = "true" ]; then \
       apt-get update && apt-get install -y \
         wget \
         libdbus-glib-1-2 && \
-      # Install Google Chrome from upstream
-      wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-      apt-get install -y ./google-chrome-stable_current_amd64.deb && \
-      rm google-chrome-stable_current_amd64.deb && \
+      dpkgArch="$(dpkg --print-architecture)"; \
+      if [ "$dpkgArch" = "amd64" ]; then \
+        # Install Google Chrome (amd64 only)
+        wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+        apt-get install -y ./google-chrome-stable_current_amd64.deb && \
+        rm google-chrome-stable_current_amd64.deb ; \
+      else \
+        # Install Chromium from Debian repos on non-amd64
+        wget -qO- https://ftp-master.debian.org/keys/release-12.asc | gpg --dearmor -o /usr/share/keyrings/debian-bookworm.gpg && \
+        echo "deb [signed-by=/usr/share/keyrings/debian-bookworm.gpg] http://deb.debian.org/debian bookworm main" > /etc/apt/sources.list.d/debian-bookworm.list && \
+        printf 'Package: *\nPin: origin deb.debian.org\nPin-Priority: 1\n\nPackage: chromium chromium-common\nPin: origin deb.debian.org\nPin-Priority: 500\n' > /etc/apt/preferences.d/chromium && \
+        apt-get update && \
+        apt-get install -y --no-install-recommends chromium && \
+        ln -sf /usr/bin/chromium /usr/local/bin/google-chrome ; \
+      fi && \
       # Install Firefox from Mozilla
-      wget -q -O firefox.tar.xz "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
+      case "$dpkgArch" in \
+        amd64) FF_OS='linux64';; \
+        arm64) FF_OS='linux64-aarch64';; \
+      esac && \
+      wget -q -O firefox.tar.xz "https://download.mozilla.org/?product=firefox-latest&os=$FF_OS&lang=en-US" && \
       tar -xf firefox.tar.xz -C /opt && \
       ln -s /opt/firefox/firefox /usr/local/bin/firefox && \
       rm firefox.tar.xz && \
       rm -rf /var/lib/apt/lists/* && \
-      echo "Chrome version:" && google-chrome --version && \
+      echo "Chrome/Chromium version:" && google-chrome --version && \
       echo "Firefox version:" && firefox --version ; \
     fi
 
