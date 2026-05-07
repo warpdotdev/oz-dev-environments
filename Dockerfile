@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM debian:trixie-slim
 
 # =============================================================================
 # VERSION CONFIGURATION
@@ -135,22 +135,24 @@ RUN if [ "$INSTALL_RUBY" = "true" ]; then \
       bundler --version ; \
     fi
 
-# Browsers (Google Chrome + Firefox)
+# Browsers (Chromium + Firefox)
 RUN if [ "$INSTALL_BROWSERS" = "true" ]; then \
       apt-get update && apt-get install -y \
         wget \
-        libdbus-glib-1-2 && \
-      # Install Google Chrome from upstream
-      wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-      apt-get install -y ./google-chrome-stable_current_amd64.deb && \
-      rm google-chrome-stable_current_amd64.deb && \
-      # Install Firefox from Mozilla
-      wget -q -O firefox.tar.xz "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
+        libdbus-glib-1-2 \
+        --no-install-recommends chromium && \
+      ln -sf /usr/bin/chromium /usr/local/bin/google-chrome && \
+      dpkgArch="$(dpkg --print-architecture)"; \
+      case "$dpkgArch" in \
+        amd64) FF_OS='linux64';; \
+        arm64) FF_OS='linux64-aarch64';; \
+      esac && \
+      wget -q -O firefox.tar.xz "https://download.mozilla.org/?product=firefox-latest&os=$FF_OS&lang=en-US" && \
       tar -xf firefox.tar.xz -C /opt && \
       ln -s /opt/firefox/firefox /usr/local/bin/firefox && \
       rm firefox.tar.xz && \
       rm -rf /var/lib/apt/lists/* && \
-      echo "Chrome version:" && google-chrome --version && \
+      echo "Chromium version:" && chromium --version && \
       echo "Firefox version:" && firefox --version ; \
     fi
 
