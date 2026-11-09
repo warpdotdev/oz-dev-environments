@@ -100,9 +100,9 @@ jobs:
           # .NET
           - repo: dev-dotnet
             key: dotnet
-            tag: "8.0"
+            tag: "10.0"
             dotnet: "true"
-            dotnet_version: "8.0"
+            dotnet_version: "10.0"
             platforms: "linux/amd64,linux/arm64"
             languages: "dotnet,csharp,fsharp,visualbasic"
           # Ruby
@@ -142,7 +142,7 @@ jobs:
             java: "true"
             java_version: "21"
             dotnet: "true"
-            dotnet_version: "8.0"
+            dotnet_version: "10.0"
             ruby: "true"
             ruby_version: "3.3"
             platforms: "linux/amd64,linux/arm64"
@@ -187,7 +187,7 @@ jobs:
             GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
             RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}
             JAVA_VERSION=${{ matrix.key == 'java' && inputs.version || matrix.java_version || '21' }}
-            DOTNET_VERSION=${{ matrix.key == 'dotnet' && inputs.version || matrix.dotnet_version || '8.0' }}
+            DOTNET_VERSION=${{ matrix.key == 'dotnet' && inputs.version || matrix.dotnet_version || '10.0' }}
             RUBY_VERSION=${{ matrix.key == 'ruby' && inputs.version || matrix.ruby_version || '3.3' }}
             ANDROID_CMDLINE_TOOLS_VERSION=${{ matrix.key == 'android' && inputs.version || matrix.android_cmdline_tools_version || '15859902' }}
             LANGUAGES=${{ matrix.languages || '' }}
@@ -218,7 +218,7 @@ jobs:
             GO_VERSION=${{ matrix.key == 'go' && inputs.version || matrix.go_version || '1.23.4' }}
             RUST_VERSION=${{ matrix.key == 'rust' && inputs.version || matrix.rust_version || '1.85.0' }}
             JAVA_VERSION=${{ matrix.key == 'java' && inputs.version || matrix.java_version || '21' }}
-            DOTNET_VERSION=${{ matrix.key == 'dotnet' && inputs.version || matrix.dotnet_version || '8.0' }}
+            DOTNET_VERSION=${{ matrix.key == 'dotnet' && inputs.version || matrix.dotnet_version || '10.0' }}
             RUBY_VERSION=${{ matrix.key == 'ruby' && inputs.version || matrix.ruby_version || '3.3' }}
             ANDROID_CMDLINE_TOOLS_VERSION=${{ matrix.key == 'android' && inputs.version || matrix.android_cmdline_tools_version || '15859902' }}
             LANGUAGES=${{ matrix.languages || '' }}
