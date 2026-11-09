@@ -87,7 +87,7 @@ runtimes. Each image is published in two variants:
 | **warpdotdev/dev-rust** | `1.83` / `1.83-agents` | Rust 1.83.0 + base |
 | **warpdotdev/dev-rust** | `1.85` / `1.85-agents` | Rust 1.85.0 + base |
 | **warpdotdev/dev-java** | `21` / `21-agents` | Temurin JDK 21, Maven, Gradle + base |
-| **warpdotdev/dev-dotnet** | `10.0` / `10.0-agents` | .NET SDK 10.0 + base |
+| **warpdotdev/dev-dotnet** | `8.0` / `8.0-agents` | .NET SDK 8.0 + base |
 | **warpdotdev/dev-ruby** | `3.3` / `3.3-agents` | Ruby 3.3 + Bundler + base |
 | **warpdotdev/dev-web** | `latest` / `latest-agents` | Google Chrome, Firefox + base |
 | **warpdotdev/dev-android** | `latest` / `latest-agents` | Android SDK cmdline-tools, platform-tools, emulator, JDK + base |
@@ -144,18 +144,6 @@ RUN apt-get update && apt-get install -y your-package
 ```
 
 ## Image-specific notes
-
-### `dev-dotnet` and `dev-full`
-
-`dev-full:latest` and `dev-full:latest-agents` use .NET SDK 10.0. For a .NET-only
-environment, use `dev-dotnet:10.0` or `dev-dotnet:10.0-agents`. The installer selects the
-latest available SDK patch in the configured channel.
-
-These images do not include SDK 8 or the .NET 8 runtime. Projects that require an older
-SDK or runtime must supply it in a [custom image](#using-a-custom-image).
-
-A `global.json` pinned to SDK 8 can prevent SDK 10 from being selected; update its SDK
-version or roll-forward policy before switching images.
 
 ### `dev-android`
 
